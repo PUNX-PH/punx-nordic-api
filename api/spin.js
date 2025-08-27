@@ -56,6 +56,9 @@ module.exports = async (req, res) => {
       result = { PrizeName: sel.PrizeName, PrizeId: sel.PrizeId, Index: pickedIndex };
     }
 
+    // Add current UTC date (optional)
+    result.utcDate = new Date().toISOString().slice(0, 10);
+
     return res.status(200).json({ success: true, result });
   } catch (err) {
     console.error("spinpanalo error:", err);
