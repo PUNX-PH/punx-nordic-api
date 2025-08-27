@@ -86,7 +86,6 @@ module.exports = async (req, res) => {
       result,
       stats: {
         utcDate,
-        totalSpins,
         updatedPrize: PrizeId !== "TRY_AGAIN"
           ? { PrizeId, winCount }
           : undefined,
