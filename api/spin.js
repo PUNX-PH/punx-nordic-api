@@ -68,6 +68,16 @@ function pickPrizeByProbability(prizes, tryAgainWeight = 40) {
 
 // Main exported endpoint: Vercel/Next.js API format
 module.exports = async (req, res) => {
+  // ✅ Add CORS headers
+  res.setHeader("Access-Control-Allow-Origin", "https://spinmo-panalomo.vercel.app"); // allow only your frontend
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  // ✅ Handle preflight requests (OPTIONS)
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method not allowed" });
   }
