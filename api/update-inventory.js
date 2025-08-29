@@ -18,9 +18,24 @@ function getUtcDateString() {
 }
 
 module.exports = async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "https://spinmo-panalomo.vercel.app"); // allow only your frontend
+  // ✅ Allow multiple origins
+  const allowedOrigins = [
+    "https://spinmo-panalomo.vercel.app",
+    "https://punx-ph.github.io"
+  ];
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  // ✅ Handle preflight
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
@@ -61,7 +76,6 @@ module.exports = async (req, res) => {
     }
 
     // GameStats by UTC date
-    // Increment TotalSpins for today
     const spinsPath = `/GameStats/${utcDate}/TotalSpins.json`;
     let totalSpins = await fetchJson(spinsPath).catch(() => 0);
     totalSpins = (Number(totalSpins) || 0) + 1;
@@ -89,9 +103,10 @@ module.exports = async (req, res) => {
       result,
       stats: {
         utcDate,
-        updatedPrize: PrizeId !== "TRY_AGAIN"
-          ? { PrizeId, winCount }
-          : undefined,
+        updatedPrize:
+          PrizeId !== "TRY_AGAIN"
+            ? { PrizeId, winCount }
+            : undefined,
       },
     });
   } catch (err) {
